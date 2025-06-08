@@ -68,7 +68,7 @@ export default function Library() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <BookOpen className="h-8 w-8 text-blue-600" />
-              <h1 className="text-xl font-semibold">Rindle Kindle</h1>
+              <h1 className="text-xl font-semibold">Rindle</h1>
             </div>
             
             <div className="flex items-center space-x-4">

@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, jsonb, timestamp, sql } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -10,7 +10,7 @@ export const papers = pgTable("papers", {
   year: integer("year"),
   doi: text("doi"),
   filename: text("filename").notNull(),
-  content: text("content").notNull(),
+  content: jsonb("content").notNull().default(sql`'[]'::jsonb`),
   thumbnail: text("thumbnail"), // Base64 encoded first page image
   progress: integer("progress").default(0),
   totalPages: integer("total_pages").default(1),
