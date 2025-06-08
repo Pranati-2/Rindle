@@ -201,92 +201,49 @@ export default function Reader() {
             </div>
           </div>
 
-          {/* Reading Content with Responsive Columns */}
+          {/* Reading Content - Now renders images */}
           <div 
-            className={`reading-text columns-1 lg:columns-2 gap-8 ${
+            className={`reading-text ${ // Removed column and gap styles
               theme === "light" ? "text-neutral-900" :
               theme === "dark" ? "text-neutral-100" :
               "text-[#5C4B37]"
             }`}
-            style={{ 
-              fontSize: `${fontSize}px`,
-              fontFamily: 'Georgia, serif',
-              lineHeight: 1.7,
-              textAlign: 'justify',
-              columnFill: 'balance'
-            }}
+            // Removed inline styles for fontSize, fontFamily, lineHeight, textAlign, columnFill
           >
-            {/* Sample Academic Content */}
-            <div className="break-inside-avoid mb-6">
-              <h2 className="text-xl font-semibold mb-4 break-after-avoid">Abstract</h2>
-              <p className="mb-4">
-                The dominant sequence transduction models are based on complex recurrent or convolutional neural networks 
-                that include an encoder and a decoder. The best performing models also connect the encoder and decoder 
-                through an attention mechanism. We propose a new simple network architecture, the Transformer, based 
-                solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
-              </p>
-            </div>
+            {(() => {
+              // Ensure paper.content is correctly typed, it should be Array<{type: string, value: string}>
+              // as per shared/schema.ts and server/pdf-processor.ts
+              const contentArray = paper.content as Array<{ type: string; value: string }>;
+              const currentContentPage = contentArray && contentArray[currentPage - 1];
 
-            <div className="break-inside-avoid mb-6">
-              <h2 className="text-xl font-semibold mb-4 break-after-avoid">1. Introduction</h2>
-              <p className="mb-4">
-                Recurrent neural networks, long short-term memory and gated recurrent neural networks in particular, 
-                have been firmly established as state of the art approaches in sequence modeling and transduction 
-                problems such as language modeling and machine translation. Numerous efforts have since continued 
-                to push the boundaries of recurrent language models and encoder-decoder architectures.
-              </p>
-              <p className="mb-4">
-                Recurrent models typically factor computation along the symbol positions of the input and output 
-                sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden 
-                states h_t, as a function of the previous hidden state h_(t-1) and the input for position t.
-              </p>
-            </div>
+              if (isLoading) { // This isLoading is for the paper query, page content itself isn't separately loaded here
+                return <p>Loading paper details...</p>;
+              }
 
-            <div className="break-inside-avoid mb-6">
-              <h2 className="text-xl font-semibold mb-4 break-after-avoid">2. Background</h2>
-              <p className="mb-4">
-                The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, 
-                ByteNet and ConvS2S, all of which use convolutional neural networks as basic building block, 
-                computing hidden representations in parallel for all input and output positions.
-              </p>
-              <p className="mb-4">
-                In these models, the number of operations required to relate signals from two arbitrary input 
-                or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically 
-                for ByteNet. This makes it more difficult to learn dependencies between distant positions.
-              </p>
-            </div>
+              if (!paper) { // Should be caught by earlier checks, but good for safety
+                return <p>Paper data is not available.</p>;
+              }
 
-            <div className="break-inside-avoid mb-6">
-              <h2 className="text-xl font-semibold mb-4 break-after-avoid">3. Model Architecture</h2>
-              <p className="mb-4">
-                Most competitive neural sequence transduction models have an encoder-decoder structure. Here, 
-                the encoder maps an input sequence of symbol representations (x_1, ..., x_n) to a sequence 
-                of continuous representations z = (z_1, ..., z_n). Given z, the decoder then generates an 
-                output sequence (y_1, ..., y_m) of symbols one element at a time.
-              </p>
-              <p className="mb-4">
-                At each step the model is auto-regressive, consuming the previously generated symbols as 
-                additional input when generating the next. The Transformer follows this overall architecture 
-                using stacked self-attention and point-wise, fully connected layers for both the encoder 
-                and decoder, shown in the left and right halves of Figure 1, respectively.
-              </p>
-            </div>
-
-            <div className={`${
-              theme === "light" ? "bg-neutral-50" :
-              theme === "dark" ? "bg-neutral-800" :
-              "bg-[#8B7355]/5"
-            } p-4 sm:p-6 rounded-lg break-inside-avoid mb-6`}>
-              <p className={`italic text-sm ${
-                theme === "light" ? "text-neutral-600" :
-                theme === "dark" ? "text-neutral-400" :
-                "text-[#8B7355]"
-              }`}>
-                This is sample content to demonstrate the responsive layout. In a production environment, 
-                the actual paper content would be extracted from the uploaded {paper.filename?.endsWith('.pdf') ? 'PDF' : 'DOCX'} file 
-                using PDF.js for PDF files or Mammoth.js for DOCX files, maintaining proper formatting and structure.
-              </p>
-            </div>
+              if (currentContentPage && currentContentPage.type === 'image') {
+                return (
+                  <img
+                    src={currentContentPage.value}
+                    alt={`Page ${currentPage} of ${paper.totalPages}`}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      objectFit: 'contain',
+                      margin: '0 auto', // Center the image if it's narrower than the container
+                      maxWidth: '800px' // Optional: constrain max width for very large screens
+                    }}
+                  />
+                );
+              } else if (currentContentPage) {
+                return <p>Unsupported content type for this page: {currentContentPage.type}.</p>;
+              } else {
+                return <p>No content available for this page ({currentPage} of {paper.totalPages}).</p>;
+              }
+            })()}
           </div>
         </div>
       </main>

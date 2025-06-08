@@ -37,13 +37,13 @@ export function PaperCard({ paper, viewMode }: PaperCardProps) {
         }`}>
           <CardContent className="p-6">
             <div className="flex items-center space-x-6">
-              {/* Thumbnail placeholder */}
-              <div className={`w-16 h-20 rounded flex-shrink-0 flex items-center justify-center ${
-                theme === "light" ? "bg-neutral-100" :
-                theme === "dark" ? "bg-neutral-800" :
-                "bg-[#8B7355]/10"
-              }`}>
-                📄
+              {/* Thumbnail */}
+              <div className={`w-16 h-20 rounded flex-shrink-0 ${theme === "light" ? "bg-neutral-100" : theme === "dark" ? "bg-neutral-800" : "bg-[#8B7355]/10"}`}>
+                {paper.thumbnail ? (
+                  <img src={paper.thumbnail} alt={`${paper.title} thumbnail`} className="w-full h-full object-cover rounded" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xl">📄</div>
+                )}
               </div>
               
               <div className="flex-1 min-w-0">
@@ -114,13 +114,13 @@ export function PaperCard({ paper, viewMode }: PaperCardProps) {
       <Card className={`cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
         theme === "sepia" ? "bg-[#F7F3E9] border-[#8B7355]/20" : ""
       }`}>
-        {/* Thumbnail placeholder */}
-        <div className={`w-full h-48 rounded-t-xl flex items-center justify-center text-4xl ${
-          theme === "light" ? "bg-neutral-100" :
-          theme === "dark" ? "bg-neutral-800" :
-          "bg-[#8B7355]/10"
-        }`}>
-          📄
+        {/* Thumbnail */}
+        <div className={`w-full h-48 rounded-t-xl ${theme === "light" ? "bg-neutral-100" : theme === "dark" ? "bg-neutral-800" : "bg-[#8B7355]/10"}`}>
+          {paper.thumbnail ? (
+            <img src={paper.thumbnail} alt={`${paper.title} thumbnail`} className="w-full h-full object-cover rounded-t-xl" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-4xl">📄</div>
+          )}
         </div>
         
         <CardContent className="p-6">
